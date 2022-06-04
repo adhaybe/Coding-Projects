@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <!--Meta Data-->
+      <meta charset="utf-8">
+      <meta name="author" content="Adnan Haybe">
+      <meta name="description" content="Geolocation Application">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <!--Favicon-->
+      <link rel="icon" href="assets/favicon/favicon.png">
+
+      <!--Bootstrap css-->
+      <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css"> 
+
+      <!--Leaflet css-->
+      <link rel="stylesheet" href="libs/leaflet/leaflet.css">
+      <link rel="stylsheet" href="libs/leaflet/EasyButton/src/easy-button.css">
+
+      <!--Marker Cluser css-->
+      <link rel="stylesheet" href="libs/leaflet/leaflet.markercluster/dist/MarkerCluster.css">
+      <link rel="stylesheet" href="libs/leaflet/leaflet.markercluster/dist/MarkerCluster.Default.css">
+
+      <!--Leaflet Extra Marker css-->
+      <link rel="stylesheet" href="libs/leaflet/Leaflet.ExtraMarkers-master/dist/css/leaflet.extra-markers.min.css">
+
+      <!--Custom css-->
+      <link rel="stylesheet" href="libs/css/styles.css">
+
+      <!--Title-->
+      <title>Gazetteer</title>
+  </head>
+
+  <!--Main Content-->
+  <body>
+    <!--Preloader that renders before HTML content-->
+
+    <div class="main" id="preloader">
+      <div class="text">
+        Gazetteer
+      </div>
+      <div class="title">
+        Now loading...
+      </div>
+      <div class="bar">
+        <div id="fill"></div>
+      </div>
+    </div>
+
+
+    <!--Map Overlay-->
+    <div id="map"></div>
+
+
+    <!--Select Countries Form-->
+    <div class="container">
+    <select id="selCountry"></select>
+    </div>
+
+
+   <!--Modal Dialogs-->
+
+    <!-- Country Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabelCountry" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title-country"><span id="staticBackdropLabelCountry"></span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <tbody class="countryInfo">
+                <tr>
+                  <th scope="row">Country Name</th>
+                  <td id="countryInfoName"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Capital City</th>
+                  <td id="countryInfoCapital"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Population</th>
+                  <td id="countryInfoPopulation"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Area (KM²)</th>
+                  <td id="countryInfoArea"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Language</th>
+                  <td id="countryInfoLanguage"></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col" colspan="2">Additional Information</th>
+                  </tr>
+              </thead>
+
+              <tbody class="countryInfo">
+                <tr>
+                  <th scope="row">Currency Code</th>
+                  <td id="countryInfoCurrencyCode"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Current Exchange Rate</th>
+                  <td id="countryInfoExchange"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Weather Modal -->
+    <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title-weather"><span id="staticBackdropLabel"></span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+           <div class="container">
+            <div class="row d-flex justify-content-center text-white">
+              <div class="col-lg-12">
+                <div id="wrapper-bg" class="card bg-image shadow-1-strong" 
+                style="background-image: url('assets/weather-animations/clouds.gif'); background-repeat: no-repeat; background-size: cover;">
+  
+                  <!-- Main Current Weather data -->
+                  <div class="card-header text-center border-0 mb-3">
+                    <p class="h2 mb-1" id="wrapper-name"></p>
+                    <p class="mb-1" id="wrapper-description"></p>
+                    <p class="display-1 mb-1" id="wrapper-temp"></p>
+                    <span>Pressure: <span id="wrapper-pressure"></span></span>
+                    <span class="mx-2">|</span>
+                    <span>Humidity: <span id="wrapper-humidity"></span></span>
+      
+                  </div>
+                  <!-- Hourly Forecast data -->
+                  <div class="card-body border-top border-bottom text-center">
+      
+                    <div class="row">
+                    
+                      <div class="col-2">
+                        <strong class="d-block mb-2">Now</strong>
+                        <img id="wrapper-icon-hour-now">
+                        <strong class="d-block" id="wrapper-hour-now"></strong>
+                      </div>
+                    
+                      <div class="col-2">
+                        <strong id="wrapper-time1" class="d-block mb-2"></strong>
+                        <img id="wrapper-icon-hour1">
+                        <strong class="d-block" id="wrapper-hour1"></strong>                
+                      </div>
+      
+                      <div class="col-2">
+                        <strong id="wrapper-time2" class="d-block mb-2"></strong>
+                        <img id="wrapper-icon-hour2">
+                        <strong class="d-block" id="wrapper-hour2"></strong>      
+                      </div>
+                    
+                      <div class="col-2">
+                        <strong id="wrapper-time3" class="d-block mb-2"></strong>
+                        <img id="wrapper-icon-hour3">
+                        <strong class="d-block" id="wrapper-hour3"></strong>                  
+                      </div>
+      
+                      <div class="col-2">
+                        <strong id="wrapper-time4" class="d-block mb-2"></strong>
+                        <img id="wrapper-icon-hour4">
+                        <strong class="d-block" id="wrapper-hour4"></strong>          
+                      </div>
+                    
+                      <div class="col-2">
+                        <strong id="wrapper-time5" class="d-block mb-2"></strong>
+                        <img id="wrapper-icon-hour5">
+                        <strong class="d-block" id="wrapper-hour5"></strong>               
+                      </div>
+                    </div>
+      
+                  </div>
+
+                  <!-- Daily Forecast data -->
+                  <div class="card-body px-5">
+
+                    <div class="row align-items-center">
+                      <div class="col-md-6">
+                        <strong>Today</strong>
+                      </div>
+                      <div class="col-md-2 text-center">
+                        <img id="wrapper-icon-today">
+                      </div>
+                      <div class="col-md-4 text-end">
+                        <span id="wrapper-forecast-temp-today"></span>
+                      </div>
+                    </div>
+    
+                    <div class="row align-items-center">
+                      <div class="col-md-6">
+                        <strong>Tomorrow</strong>
+                      </div>
+                      <div class="col-md-2 text-center">
+                        <img id="wrapper-icon-tomorrow">
+                      </div>
+                      <div class="col-md-4 text-end">
+                        <span id="wrapper-forecast-temp-tomorrow"></span>
+                      </div>
+                    </div>
+    
+                    <div class="row align-items-center">
+                      <div class="col-md-6">
+                        <strong>Day after tomorrow</strong>
+                      </div>
+                      <div class="col-md-2 text-center">
+                        <img id="wrapper-icon-dAT">
+                      </div>
+                      <div class="col-md-4 text-end">
+                        <span id="wrapper-forecast-temp-dAT"></span>
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+           </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+
+  <!-- News Modal -->
+    <div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          
+          <div class="modal-header">
+            <h5 class="modal-title-news"><span id="newModal"></span></h5>
+            
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        
+          <div class="modal-body">
+            
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" colspan="4">Today's Headline</th>
+                </tr>
+              </thead>
+
+              <tbody class="newsTable">
+                <tr>
+                  <td rowspan="3" colspan="2">
+                    <a id="article1Link" target="_blank"> 
+                      <img id="article1Img" class="newsImage" alt="News Article 1 Image">
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="article1Title" class="newsTitle" colspan="2"></td>
+                </tr>
+                <tr>
+                  <td id="article1Source" colspan="2"></td>
+                </tr>
+
+                <tr>
+                  <td rowspan="3" colspan="2">
+                    <a id="article2Link" target="_blank"> 
+                      <img id="article2Img" class="newsImage" alt="News Article 2 Image">
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="article2Title" class="newsTitle" colspan="2"></td>
+                </tr>
+                <tr>
+                  <td id="article2Source" colspan="2"></td>
+                </tr>
+
+              </tbody>
+            </table>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" colspan="4">More News</th>
+                </tr>
+              </thead>
+
+              <tbody class="newsTable">
+
+                <tr>
+                  <td rowspan="3" colspan="2">
+                    <a id="article3Link" target="_blank"> 
+                      <img id="article3Img" class="newsImage" alt="News Article 3 Image">
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="article3Title" class="newsTitle" colspan="2"></td>
+                </tr>
+                <tr>
+                  <td id="article3Source" colspan="2"></td>
+                </tr>
+
+                <tr>
+                  <td rowspan="3" colspan="2">
+                    <a id="article4Link" target="_blank"> 
+                      <img id="article4Img" class="newsImage" alt="News Article 4 Image">
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="article4Title" class="newsTitle" colspan="2"></td>
+                </tr>
+                <tr>
+                  <td id="article4Source" colspan="2"></td>
+                </tr>
+
+                <tr>
+                  <td rowspan="3" colspan="2">
+                    <a id="article5Link" target="_blank"> 
+                      <img id="article5Img" class="newsImage" alt="News Article 5 Image">
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="article5Title" class="newsTitle" colspan="2"></td>
+                </tr>
+                <tr>
+                  <td id="article5Source" colspan="2"></td>
+                </tr>
+
+                <tr>
+                  <td rowspan="3" colspan="2">
+                    <a id="article6Link" target="_blank"> 
+                      <img id="article6Img" class="newsImage" alt="News Article 6 Image">
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="article6Title" class="newsTitle" colspan="2"></td>
+                </tr>
+                <tr>
+                  <td id="article6Source" colspan="2"></td>
+                </tr>
+
+                <tr>
+                  <td rowspan="3" colspan="2">
+                    <a id="article7Link" target="_blank"> 
+                      <img id="article7Img" class="newsImage" alt="News Article 7 Image">
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="article7Title" class="newsTitle" colspan="2"></td>
+                </tr>
+                <tr>
+                  <td id="article7Source" colspan="2"></td>
+                </tr>
+
+                <tr>
+                  <td rowspan="3" colspan="2">
+                    <a id="article8Link" target="_blank"> 
+                      <img id="article8Img" class="newsImage" alt="News Article 8 Image">
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="article8Title" class="newsTitle" colspan="2"></td>
+                </tr>
+                <tr>
+                  <td id="article8Source" colspan="2"></td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+                    
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary close" id="newsClose" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- Unable to display News Modal -->
+    <div class="modal fade" id="newsError" tabindex="-1" role="dialog" aria-labelledby="newsErrorCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          
+          <div class="modal-header">
+            <h5 class="modal-title-error">Oops....</h5>
+            
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        
+          <div class="modal-body">
+            <p>Unable to display the current news for <span id="errorCountry"></span> right now. Please try again later.</p>
+          </div>
+                    
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary close" id="errorClose" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  <!--End Of Modal Dialogs-->
+
+    </body>
+
+    <!--Load jQuery Library-->
+    <script type="application/javascript" src="libs/js/jquery-2.2.3.min.js"></script>
+
+    <!--Load Sweet Alert Library-->
+    <script type="application/javascript" src="libs/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+    <!--Load Bootstrap js-->
+    <script type="application/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
+
+    <!--Load Font Awesome-->
+    <script type="application/javascript" src="assets/@fortawesome/fontawesome-free/js/all.js"></script>
+
+    <!--Load Leaflet js-->
+    <script type="application/javascript" src="libs/leaflet/leaflet.js"></script>
+    <script type="application/javascript" src="libs/leaflet/EasyButton/src/easy-button.js"></script>
+
+    <!--Load Marker Cluster js-->
+    <script type="application/javascript" src="libs/leaflet/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+    <!--Load Leaflet Extra Marker-->
+    <script type="application/javascript" src="libs/leaflet/Leaflet.ExtraMarkers-master/dist/js/leaflet.extra-markers.min.js"></script>
+
+    <!--Load Script js-->
+    <script type="application/javascript" src="libs/js/script.js"></script>
+    
+</html>

@@ -1,0 +1,220 @@
+/* Main Css */
+
+.btnAlign{
+    display: inherit;
+}
+
+.submitBtn{
+    margin: auto !important;
+}
+
+.btn-danger, .btn-success {
+   margin-left: 10px;
+}
+
+.input-group-text {
+    height: 38px;
+}
+
+.depTableRow:hover, .locTableRow:hover {
+    cursor: pointer;
+    background-color: antiquewhite !important;
+}
+
+.deleteBtn {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding-left: 2px;
+}
+
+.fa-trash-alt {
+    padding-right: 2px;
+}
+
+ .tableFixHead {
+    height: 100%;
+    background-color: #454749;
+    color: white;
+}
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-style: solid;
+    border-width: 1px !important;
+}
+
+th {
+    background: white;
+    color: black;
+}
+
+.tableIcon{
+    text-align: center;
+}
+
+.table-container {
+     margin: 0px auto;
+ }
+
+ .table-sub-container {
+     border-collapse: collapse;
+     width: 100%;
+ }
+
+ .table thead tr th {
+     font-size: 14px;
+     font-weight: 600;
+     letter-spacing: 0.35px;
+     opacity: 1;
+     padding: 12px;
+     vertical-align: top;
+     border-top: 1px solid #dee2e685;
+     border-left: 1px solid grey;
+ }
+
+ .tableRow:hover {
+    cursor: pointer;
+    background-color: beige !important;
+}
+
+ .table tbody tr {
+     text-align: center;
+     background-color: rgb(226, 226, 226);;
+
+ }
+
+ .navbar {
+     background-color: rgb(44, 44, 44);
+ }
+
+#heading {
+    color: white;
+    margin: 0 auto;
+}
+
+.container-nav {
+    margin: 0 auto;
+    margin-bottom: -10px;
+    padding-left: 700px;
+}
+
+.btn-secondary {
+    margin-left: 5px;
+    margin-bottom: 7px;
+}
+
+.me-2 {
+    margin-left: 5px;
+}
+
+.search-form {
+    display: flex;
+    margin: 0 auto;
+    width: 100%;
+}
+
+#searchSelect {
+    text-align: center;
+    background-color: rgb(226, 226, 226);
+    cursor: pointer;
+}
+
+#searchSelect:hover {
+    background-color: rgb(210, 210, 210);
+}
+
+.btn-success {
+    margin-bottom: 7px;
+}
+
+.btn-danger {
+    margin-bottom: 7px;
+}
+
+#deleteConfirm, #delDepName, #delLocName {
+    color: crimson;
+    text-align: center;
+}
+
+.warning-message {
+    text-align: center;
+}
+
+.note-message {
+    font-size: 12px;
+    color: rgb(71, 71, 71);
+}
+
+.delete-confirm-container {
+    margin: 0 auto;
+}
+
+.warning-modal-title {
+    color: rgb(229, 202, 0);
+}
+
+/* Main Css */
+
+
+
+
+  /***************** Media Queries ****************/
+
+ @media (max-width: 968px) {
+    .search-form {
+        width: 100%;
+    }
+
+    .container-nav {
+        margin: 0 auto;
+        margin-bottom: -5px;
+        padding-left: 0px;
+    }
+    
+    #heading {
+        display: none;
+        
+    }
+
+    .table-container {
+        margin: 0.2px auto;
+    }
+
+     .table thead {
+         display: none;
+         
+     }
+     .table, .table tbody, .table tr, .table td {
+         display: block;
+         width: 100%;
+     }
+     .table tr {
+         margin-bottom: 15px;
+     }
+     .table tbody tr td {
+         text-align: center;
+         background-color: rgb(226, 226, 226);;
+     }
+
+     .loader {
+        left: calc(52vw - 75px);
+    }
+
+ }
+  /***************** End Media Queries ****************/
+
+
+ 
+ 
