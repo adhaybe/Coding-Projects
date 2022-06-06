@@ -8,6 +8,7 @@ var currentDepartment = [];
 let currentSelectedEmployeeID;
 let currentSelectedLocationName;
 let currentSelectedLocationID;
+let numOfDepartments;
 
 
 // -------------------------------- Employee CRUD operations-------------------------------------
@@ -456,14 +457,24 @@ const createNewLocation = () => {
 const updateLocation = () => {
 
     // retrieves the id of the selected location
-    $('#locationsList').on('click','tr', async (event) => {
+    $('#locationsList').on('click','tr', (event) => {
 
         let currentSelectRow = event.currentTarget;
 
         currentSelectedLocationName = currentSelectRow.attributes.locationname.value;
         currentSelectedLocationID = currentSelectRow.attributes.locationid.value;
+        numOfDepartments = currentSelectRow.attributes.departments.value;
 
         $('#edit_location_name').val(`${currentSelectedLocationName}`);
+
+        // condition for checking if a department has no users we can delete otherwise delete will display modal error message
+        if (numOfDepartments == 0){
+            $("#deleteLocBtn").show();
+            $("#locationDelete").attr("locationName", currentSelectedLocationName);
+            $("#locationDelete").attr("locationID", currentSelectedLocationID);
+        } else {
+            document.getElementById('deleteLocBtn').innerHTML = "Unable to delete location with active users";  
+        }
     });
 
     // updates the location name based on user input
