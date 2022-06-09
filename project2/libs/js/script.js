@@ -13,6 +13,15 @@ let currentSelectedDepartmentID;
 let numOfDepartments;
 
 
+// $(window).on('load', () => {
+//     if ($('#preloader').length) {
+//         $('#preloader').delay(2000).fadeOut('slow', () => {
+//             $(this).remove();
+//         });
+//     }
+// });
+
+
 // -------------------------------- Employee CRUD operations-------------------------------------
 
 // Ajax call for Creating New Employee Information
@@ -317,10 +326,6 @@ const updateDepartmentInfo = () => {
         currentSelectedLocationID = currentSelectRow.attributes.location.value;
         currentSelectedDepartmentName = currentSelectRow.attributes.title.nodeValue;
 
-        let numOfUsers = currentSelectRow.attributes.users.value;
-
-       
-        
         // condition for checking if a department has no users we can delete otherwise delete will display modal error message
         // if (numOfUsers == 0) {
         //     $("#deleteDepBtn").show();
@@ -329,18 +334,6 @@ const updateDepartmentInfo = () => {
         // } else {
         //     document.getElementById('deleteDepBtn').innerHTML = "Unable to delete department with active users";  
         // }
-
-        if(numOfUsers == 0) {
-            $("#deleteDepBtn").show();
-            $("#departmentDelete").attr("departmentName",currentSelectRow.attributes.title.value);
-            $("#departmentDelete").attr("departmentid",currentSelectRow.attributes.departmentid.value);
-        } else {
-          $("#deleteDepBtn").click(() => {
-            $("#unableToDeleteDependency").modal('show');
-            document.getElementById('delete-title').innerHTML = currentSelectRow.attributes.title.value;
-            $('#departmentDeleteModal').modal('hide');
-          });
-        }
 
         // program must await here for location data
         await getLocations();
@@ -386,29 +379,38 @@ const updateDepartmentInfo = () => {
 
 // Ajax call for Deleting Departments
 const deleteDepartmentInfo = () => {
-    $("#departmentDelete").click(() => {      
-    
-        $('.modal-backdrop').show(); // Show the grey overlay.
-        $('#delDepName').html(currentSelectedDepartmentName);
-
-        var depID = currentSelectedDepartmentID;
-
+    $('#departmentsList').on('click','tr', (event) => {
+        let currentSelectRow = event.currentTarget;
+        let locationDependencies = currentSelectRow.attributes.location.value;
+        let currentDepartmentTitle = currentSelectRow.attributes.title.value;
+        $('#departmentDelete').click(() => {
+            $('.modal-backdrop').show(); // Show the grey overlay.
+            document.getElementById('delDepName').innerHTML = currentDepartmentTitle;
+        });
         $("#delDepConfirm").click(() => { 
-            var depIDInt = parseInt(depID)
-            
-            $.ajax({
-                type: 'POST',
-                url: "libs/php/deleteDepartmentByID.php",
-                data: {
-                    id: depIDInt,
-                },
-                dataType: 'json',
-                async: false,
-                success: () => {
-                    location.reload();
-                }, 
-                error: (error) => console.log(error)
-            });
+            // checks if the selected department has any location dependencies
+            if(locationDependencies == 0) {
+                var depID = currentSelectedDepartmentID;
+                var depIDInt = parseInt(depID)   
+                    $.ajax({
+                        type: 'POST',
+                        url: "libs/php/deleteDepartmentByID.php",
+                        data: {
+                            id: depIDInt,
+                        },
+                        dataType: 'json',
+                        async: false,
+                        success: () => {
+                            location.reload();
+                        }, 
+                        error: (error) => console.log(error)
+                    });
+              
+            } else {
+                $("#unableToDeleteDepartmentDependency").modal('show');
+                $("#departmentDeleteModal").modal('hide');
+                document.getElementById('delete-title').innerHTML = currentSelectRow.attributes.title.value;
+            }
         });
     });
 }
@@ -479,18 +481,27 @@ const updateLocation = () => {
 
         currentSelectedLocationName = currentSelectRow.attributes.locationname.value;
         currentSelectedLocationID = currentSelectRow.attributes.locationid.value;
-        numOfDepartments = currentSelectRow.attributes.departments.value;
+        let departmentDependencies = currentSelectRow.attributes.departments.value;
 
         $('#edit_location_name').val(`${currentSelectedLocationName}`);
 
         // condition for checking if a department has no users we can delete otherwise delete will display modal error message
-        if (numOfDepartments == 0){
-            $("#deleteLocBtn").show();
-            $("#locationDelete").attr("locationName", currentSelectedLocationName);
-            $("#locationDelete").attr("locationID", currentSelectedLocationID);
-        } else {
-            document.getElementById('deleteLocBtn').innerHTML = "Unable to delete location with active users";  
-        }
+        // if (numOfDepartments == 0){
+        //     $("#deleteLocBtn").show();
+        //     $("#locationDelete").attr("locationName", currentSelectedLocationName);
+        //     $("#locationDelete").attr("locationID", currentSelectedLocationID);
+        // } else {
+        //     document.getElementById('deleteLocBtn').innerHTML = "Unable to delete location with active users";  
+        // }
+
+        $("#delLocConfirm").click(() => {
+            if(departmentDependencies == 0) {
+                deleteLocation();
+            } else {
+                $("#unableToDeleteLocationDependency").modal('show');
+                document.getElementById('location-delete-title').innerHTML = currentSelectRow.attributes.title.value;
+            }
+        });
     });
 
     // updates the location name based on user input
@@ -536,7 +547,7 @@ const deleteLocation = () => {
                 },
                 dataType: 'json',
                 async: false,
-                success: (results) => {
+                success: () => {
                     location.reload();
                 },
                 error: (error) => console.log(error)
@@ -829,6 +840,5 @@ $(document).ready(() => {
     createNewLocation(); // creates a new location
     retrieveLocationInfo(); // displays existing location information in a modal
     updateLocation(); // edits location information in a modal window
-    deleteLocation(); // deletes location information in a modal window
 
 });
