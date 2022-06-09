@@ -1,13 +1,15 @@
 // -------------------------------- Global Variables -------------------------------------
 
 // array containers
-var currentLocation = [];
-var currentDepartment = [];
+let currentLocation = [];
+let currentDepartment = [];
 
 // stores department and location id
 let currentSelectedEmployeeID;
 let currentSelectedLocationName;
+let currentSelectedDepartmentName;
 let currentSelectedLocationID;
+let currentSelectedDepartmentID;
 let numOfDepartments;
 
 
@@ -25,7 +27,7 @@ const createEmployeeInfo = () => {
         let selectDepartment = ``;
 
         // loop through department data
-        for(i=0; i<currentDepartment.length; i++){
+        for(i=0; i< currentDepartment.length; i++){
             selectDepartment += `<option value="${currentDepartment[i].id}">${currentDepartment[i].department}</option>`
         }
 
@@ -88,7 +90,6 @@ const retrieveEmployeeInfo = () => {
 
                 // populate modal with employee information
                 $('#userSelectModalLabel').html(`${personnel.firstName} ${personnel.lastName}`);
-                $('#user_id').val(personnel.id);
                 $('#user_firstName').val(personnel.firstName);
                 $('#user_lastName').val(personnel.lastName);
                 $('#user_email').val(personnel.email);
@@ -161,8 +162,6 @@ const updateEmployeeInfo = () => {
             
             let selectLocation = "";
             let locationID = document.getElementById('edit_user_department').value;
-
-            console.log(locationID);
             
             for(let i=0; i < currentDepartment.length; i++){
                 if (currentDepartment[i]['id'] == locationID){
@@ -312,18 +311,35 @@ const updateDepartmentInfo = () => {
         let currentSelectRow = event.currentTarget;
         $('.modal-backdrop').show(); // Show the grey overlay.
         $('#editDepName').val(`${currentSelectRow.title}`);
-        $('#editDepForm').attr("depID", `${currentSelectRow.attributes.departmentid.value}`);
+        $('#editDepForm').attr("depID", `${currentSelectedDepartmentID}`);
         
-        let depID = currentSelectRow.id;
-        let locID = currentSelectRow.attributes.location.value;
+        currentSelectedDepartmentID  = currentSelectRow.attributes.departmentid.value;
+        currentSelectedLocationID = currentSelectRow.attributes.location.value;
+        currentSelectedDepartmentName = currentSelectRow.attributes.title.nodeValue;
+
+        let numOfUsers = currentSelectRow.attributes.users.value;
+
+       
         
-        // condition for checking if a departmet has no users we can delete otherwise delete will display modal error message
-        if (currentSelectRow.attributes.users.value == 0){
+        // condition for checking if a department has no users we can delete otherwise delete will display modal error message
+        // if (numOfUsers == 0) {
+        //     $("#deleteDepBtn").show();
+        //     $("#departmentDelete").attr("departmentName",currentSelectRow.attributes.title.value);
+        //     $("#departmentDelete").attr("departmentid",currentSelectRow.attributes.departmentid.value);
+        // } else {
+        //     document.getElementById('deleteDepBtn').innerHTML = "Unable to delete department with active users";  
+        // }
+
+        if(numOfUsers == 0) {
             $("#deleteDepBtn").show();
             $("#departmentDelete").attr("departmentName",currentSelectRow.attributes.title.value);
             $("#departmentDelete").attr("departmentid",currentSelectRow.attributes.departmentid.value);
         } else {
-            document.getElementById('deleteDepBtn').innerHTML = "Unable to delete department with active users";  
+          $("#deleteDepBtn").click(() => {
+            $("#unableToDeleteDependency").modal('show');
+            document.getElementById('delete-title').innerHTML = currentSelectRow.attributes.title.value;
+            $('#departmentDeleteModal').modal('hide');
+          });
         }
 
         // program must await here for location data
@@ -333,7 +349,7 @@ const updateDepartmentInfo = () => {
         let locationSelection = "";
         for(i=0; i<currentLocation.length; i++){
             
-            if(currentLocation[i].id == locID){
+            if(currentLocation[i].id == currentSelectedLocationID){
                 locationSelection += `<option value="${currentLocation[i].id}" selected="selected">${currentLocation[i].location}</option>`
             }
             else {
@@ -370,13 +386,13 @@ const updateDepartmentInfo = () => {
 
 // Ajax call for Deleting Departments
 const deleteDepartmentInfo = () => {
-    $("#departmentDelete").click(function(){      
+    $("#departmentDelete").click(() => {      
     
         $('.modal-backdrop').show(); // Show the grey overlay.
-        $('#delDepName').html(`${this['attributes']['departmentName']['value']}`);
+        $('#delDepName').html(currentSelectedDepartmentName);
 
-        var depID = this.attributes.departmentid.value;
-        
+        var depID = currentSelectedDepartmentID;
+
         $("#delDepConfirm").click(() => { 
             var depIDInt = parseInt(depID)
             
@@ -564,7 +580,7 @@ const getLocations = () => new Promise((resolve, reject) => {
         data: {},
         dataType: 'json',
         async: false,
-        success: function(result) {
+        success: (result) => {
 
             currentLocation = [];
             let data = result["data"];
@@ -616,7 +632,7 @@ const populateTable = () => {
 
             // loops through each html element and adds users data to the html table
             for (let i=0; i < tableData.length; i++) {
-                htmlTable += `<tr class="tableRow" id="${users[i].id}"><td scope="row" class="tableIcon"><i class="fas fa-user-circle fa-lg"></i></td><td scope="row">${users[i].firstName}</td><td scope="row">${users[i].lastName}</td><td scope="row" class="d-print-none">${users[i].email}</td><td scope="row" class="d-print-none">${users[i].jobTitle}</td><td scope="row" class="d-print-none">${users[i].department}</td><td scope="row" class="d-print-none">${users[i].location}</td></tr>`;
+                htmlTable += `<tr class="tableRow" id="${users[i].id}"><td scope="row" class="tableIcon"><i class="fas fa-user-circle fa-lg"></i></td><td scope="row">${users[i].firstName}</td><td scope="row">${users[i].lastName}</td><td scope="row" class="hider1">${users[i].email}</td><td scope="row" class="hider1">${users[i].jobTitle}</td><td scope="row" class="hider2">${users[i].department}</td><td scope="row" class="hider2">${users[i].location}</td></tr>`;
             }
 
             $('#mainTable').html(htmlTable); 
@@ -693,7 +709,6 @@ const searchInfo = () => {
                         async: false,
                         success: (result) => {
                             displaySearchResult(result); // function that will populate the database with search criteria
-                            console.log(result);
                         },
                         error: (error) => console.log(error) // log error message
                     });
@@ -774,7 +789,7 @@ const searchInfo = () => {
     let searchBtnClick = document.getElementById("searchField");
 
     // Execute a function when the user presses a key on the keyboard
-    searchBtnClick.addEventListener("keypress", function(event) {
+    searchBtnClick.addEventListener("keypress", (event) => {
     // If the user presses the "Enter" key on the keyboard
     if (event.key === "Enter") {
         // Cancel the default action, if needed
@@ -787,11 +802,16 @@ const searchInfo = () => {
 
 }
 
+
+
 // -------------------------------- Document Ready Call -------------------------------------
 $(document).ready(() => {
     
-    // displays table with employee, department, and location information
-    populateTable();
+    // generate table
+    populateTable(); // displays table with employee, department, and location information
+
+    // search call
+    searchInfo(); // allows you to search for specific information from directory
 
     // CRUD operation for employees
     createEmployeeInfo(); // add news employee information to database
@@ -810,8 +830,5 @@ $(document).ready(() => {
     retrieveLocationInfo(); // displays existing location information in a modal
     updateLocation(); // edits location information in a modal window
     deleteLocation(); // deletes location information in a modal window
-
-    // search function
-    searchInfo(); // allows you to search for specific information from directory
 
 });
