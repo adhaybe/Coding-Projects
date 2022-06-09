@@ -616,7 +616,7 @@ const populateTable = () => {
 
             // loops through each html element and adds users data to the html table
             for (let i=0; i < tableData.length; i++) {
-                htmlTable += `<tr class="tableRow" id="${users[i].id}"><td scope="row" class="tableIcon"><i class="fas fa-user-circle fa-lg"></i></td><td scope="row">${users[i].firstName}</td><td scope="row">${users[i].lastName}</td><td scope="row" class="hider1">${users[i].email}</td><td scope="row" class="hider1">${users[i].jobTitle}</td><td scope="row" class="hider2">${users[i].department}</td><td scope="row" class="hider2">${users[i].location}</td></tr>`;
+                htmlTable += `<tr class="tableRow" id="${users[i].id}"><td scope="row" class="tableIcon"><i class="fas fa-user-circle fa-lg"></i></td><td scope="row">${users[i].firstName}</td><td scope="row">${users[i].lastName}</td><td scope="row" class="d-print-none">${users[i].email}</td><td scope="row" class="d-print-none">${users[i].jobTitle}</td><td scope="row" class="d-print-none">${users[i].department}</td><td scope="row" class="d-print-none">${users[i].location}</td></tr>`;
             }
 
             $('#mainTable').html(htmlTable); 
