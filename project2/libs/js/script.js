@@ -13,13 +13,14 @@ let currentSelectedDepartmentID;
 let numOfDepartments;
 
 
-// $(window).on('load', () => {
-//     if ($('#preloader').length) {
-//         $('#preloader').delay(2000).fadeOut('slow', () => {
-//             $(this).remove();
-//         });
-//     }
-// });
+// preloader
+$(window).on('load', () => {
+    if ($('#preloader').length) {
+        $('#preloader').delay(500).fadeOut('slow', () => {
+            $(this).remove();
+        });
+    }
+});
 
 
 // -------------------------------- Employee CRUD operations-------------------------------------
@@ -225,9 +226,8 @@ const deleteEmployeeInfo = () => {
                 },
                 dataType: 'json',
                 async: false,
-                success: (result) => {
+                success: (result) => {   
                     location.reload();
-                    
                 },
                 error: (error) => console.log(error)
             }); 
@@ -381,36 +381,39 @@ const updateDepartmentInfo = () => {
 const deleteDepartmentInfo = () => {
     $('#departmentsList').on('click','tr', (event) => {
         let currentSelectRow = event.currentTarget;
-        let locationDependencies = currentSelectRow.attributes.location.value;
+        // let locationDependencies = currentSelectRow.attributes.location.value;
         let currentDepartmentTitle = currentSelectRow.attributes.title.value;
         $('#departmentDelete').click(() => {
             $('.modal-backdrop').show(); // Show the grey overlay.
             document.getElementById('delDepName').innerHTML = currentDepartmentTitle;
         });
         $("#delDepConfirm").click(() => { 
-            // checks if the selected department has any location dependencies
-            if(locationDependencies == 0) {
-                var depID = currentSelectedDepartmentID;
-                var depIDInt = parseInt(depID)   
-                    $.ajax({
-                        type: 'POST',
-                        url: "libs/php/deleteDepartmentByID.php",
-                        data: {
-                            id: depIDInt,
-                        },
-                        dataType: 'json',
-                        async: false,
-                        success: () => {
+            // checks if the selected department has any dependencies
+            var depID = currentSelectedDepartmentID;
+            var depIDInt = parseInt(depID)   
+                $.ajax({
+                    type: 'POST',
+                    url: "libs/php/deleteDepartmentByID.php",
+                    data: {
+                        id: depIDInt,
+                    },
+                    dataType: 'json',
+                    async: false,
+                    success: (result) => {
+                        if(result['status']['code'] === "400") {
+                            console.log('Info: Can not delete this department.');
+                            $("#unableToDeleteDepartmentDependency").modal('show');
+                            $("#departmentDeleteModal").modal('hide');
+                            document.getElementById('delete-title').innerHTML = currentSelectRow.attributes.title.value;
+                        }else {
                             location.reload();
-                        }, 
-                        error: (error) => console.log(error)
-                    });
-              
-            } else {
-                $("#unableToDeleteDepartmentDependency").modal('show');
-                $("#departmentDeleteModal").modal('hide');
-                document.getElementById('delete-title').innerHTML = currentSelectRow.attributes.title.value;
-            }
+                        }
+                        
+                    }, 
+                    error: (error) => {
+                        console.log(error)
+                    }
+                });
         });
     });
 }
@@ -481,7 +484,7 @@ const updateLocation = () => {
 
         currentSelectedLocationName = currentSelectRow.attributes.locationname.value;
         currentSelectedLocationID = currentSelectRow.attributes.locationid.value;
-        let departmentDependencies = currentSelectRow.attributes.departments.value;
+        numOfDepartments = currentSelectRow.attributes.departments.value;
 
         $('#edit_location_name').val(`${currentSelectedLocationName}`);
 
@@ -493,15 +496,6 @@ const updateLocation = () => {
         // } else {
         //     document.getElementById('deleteLocBtn').innerHTML = "Unable to delete location with active users";  
         // }
-
-        $("#delLocConfirm").click(() => {
-            if(departmentDependencies == 0) {
-                deleteLocation();
-            } else {
-                $("#unableToDeleteLocationDependency").modal('show');
-                document.getElementById('location-delete-title').innerHTML = currentSelectRow.attributes.title.value;
-            }
-        });
     });
 
     // updates the location name based on user input
@@ -533,8 +527,8 @@ const deleteLocation = () => {
     $("#locationDelete").click(() => {
             
         $('#delLocName').html(`${currentSelectedLocationName}`);   
-        $("#delLocForm").submit((event) => {
-
+        $("#delLocConfirm").click((event) => {
+            console.log(111);
             // prevents the event from further propagating and cancels it
             event.preventDefault();
             event.stopPropagation();
@@ -547,8 +541,15 @@ const deleteLocation = () => {
                 },
                 dataType: 'json',
                 async: false,
-                success: () => {
-                    location.reload();
+                success: (result) => {
+                   
+                    if (result['status']['code'] === "400") {
+                        $("#unableToDeleteLocationDependency").modal('show');
+                        $("#locationDeleteModal").modal('hide');
+                        document.getElementById('location-delete-title').innerHTML = currentSelectedLocationName;
+                    } else {
+                        // location.reload();
+                    }
                 },
                 error: (error) => console.log(error)
             });
@@ -643,7 +644,7 @@ const populateTable = () => {
 
             // loops through each html element and adds users data to the html table
             for (let i=0; i < tableData.length; i++) {
-                htmlTable += `<tr class="tableRow" id="${users[i].id}"><td scope="row" class="tableIcon"><i class="fas fa-user-circle fa-lg"></i></td><td scope="row">${users[i].firstName}</td><td scope="row">${users[i].lastName}</td><td scope="row" class="hider1">${users[i].email}</td><td scope="row" class="hider1">${users[i].jobTitle}</td><td scope="row" class="hider2">${users[i].department}</td><td scope="row" class="hider2">${users[i].location}</td></tr>`;
+                htmlTable += `<tr class="tableRow" id="${users[i].id}"><td scope="row" class="tableIcon"><i class="fas fa-user-circle fa-lg"></i></td><td scope="row">${users[i].lastName}</td><td scope="row">${users[i].firstName}</td><td scope="row" class="hider1">${users[i].email}</td><td scope="row" class="hider1">${users[i].jobTitle}</td><td scope="row" class="hider2">${users[i].department}</td><td scope="row" class="hider2">${users[i].location}</td></tr>`;
             }
 
             $('#mainTable').html(htmlTable); 
@@ -672,8 +673,9 @@ const displaySearchResult = (result) => {
 
             }
 
+            // $('#sqlTable').find('tbody').html(`${search_html_table}`);
 
-            $('#sqlTable').find('tbody').html(`${search_html_table}`);
+            document.getElementById('mainTable').innerHTML = search_html_table;
         
             // retrieve employee data to reattach event handlers to newly generated table
             retrieveEmployeeInfo();
@@ -689,6 +691,22 @@ const searchInfo = () => {
    
         // switch statement that performs a search based on user input criteria
         switch(selectOptions) {
+            // ajax call for last name search
+            case "lastName":           
+                $.ajax({
+                    type: 'GET',
+                    url: "libs/php/search_lastName.php",
+                    data: {
+                        search: "%" + document.getElementById("searchField").value + "%"
+                    },
+                    dataType: 'json',
+                    async: false,
+                    success: (result) => {
+                        displaySearchResult(result); // function that will populate the database with search criteria
+                    },
+                    error: (error) => console.log(error) // log error message
+                });
+             break;
             // ajax call for first name search
             case "firstName":
                 $.ajax({
@@ -700,29 +718,10 @@ const searchInfo = () => {
                     dataType: 'json',
                     async: false,
                     success: (result) => {
-                       
                          displaySearchResult(result); // function that will populate the database with search criteria
-                      
                     },
                     error: (error) => console.log(error) // log error message
                 });
-                break;
-
-            // ajax call for last name search
-            case "lastName":           
-                    $.ajax({
-                        type: 'GET',
-                        url: "libs/php/search_lastName.php",
-                        data: {
-                            search: "%" + document.getElementById("searchField").value + "%"
-                        },
-                        dataType: 'json',
-                        async: false,
-                        success: (result) => {
-                            displaySearchResult(result); // function that will populate the database with search criteria
-                        },
-                        error: (error) => console.log(error) // log error message
-                    });
                 break;
 
             // ajax call for department search
@@ -840,5 +839,6 @@ $(document).ready(() => {
     createNewLocation(); // creates a new location
     retrieveLocationInfo(); // displays existing location information in a modal
     updateLocation(); // edits location information in a modal window
+    deleteLocation(); // deletes location information in a modal window
 
 });
