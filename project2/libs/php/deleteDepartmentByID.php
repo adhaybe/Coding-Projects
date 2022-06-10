@@ -24,6 +24,58 @@ $executionStartTime = microtime(true);
 
 	}	
 
+
+
+// check dependencies for department, if any personnel linked to department
+
+	$query = $conn->prepare('SELECT count(id) as pc FROM personnel WHERE departmentID = ?');
+
+	$query->bind_param("s", $_REQUEST['id']);
+
+	$query->execute();
+	
+	if (false === $query) {
+
+		$output['status']['code'] = "400";
+		$output['status']['name'] = "executed";
+		$output['status']['description'] = "query failed";	
+		$output['data'] = [];
+
+		mysqli_close($conn);
+
+		echo json_encode($output); 
+
+		exit;
+
+	}
+	
+    // result is count of personnel linked to department
+	$result = $query->get_result();
+
+	// make result as an array to access its data
+	$row = $result->fetch_assoc();
+	// pc is the row name defined above, represents the count 
+	$personnel_count = $row['pc'];
+
+
+
+	if ($personnel_count!=0) {
+
+		$output['status']['code'] = "400";
+		$output['status']['name'] = "executed";
+		$output['status']['description'] = "query failed";	
+		$output['data'] = [];
+
+		mysqli_close($conn);
+
+		echo json_encode($output); 
+
+		exit;
+
+	}
+
+
+	// delete department if it has no dependencies
 	$query = $conn->prepare('DELETE FROM department WHERE id = ?');
 	
 	$query->bind_param("i", $_POST['id']);
@@ -54,5 +106,9 @@ $executionStartTime = microtime(true);
 	mysqli_close($conn);
 
 	echo json_encode($output); 
+
+	exit;
+	
+	
 
 ?>
