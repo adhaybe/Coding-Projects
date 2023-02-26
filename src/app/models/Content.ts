@@ -17,3 +17,5 @@ export interface Content {
     isBookmarked?: boolean;
     isTrending?: boolean;
 }
+
+

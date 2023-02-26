@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-search',
@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class SearchComponent {
   public searchIcon: string = '../../../assets/icon-search.svg';
+  searchText: string = '';
+  @Output() search: EventEmitter<string> = new EventEmitter<string>();
+
 }
