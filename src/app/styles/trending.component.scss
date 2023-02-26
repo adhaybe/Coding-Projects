@@ -1,0 +1,145 @@
+.trending-container {
+  grid-row: 2 / 3;
+  grid-column: 2 / 5;
+  font-family: var(--font-family);
+  margin-left: 2rem;
+
+  .movie-gallery {
+    margin-left: 2rem;
+  }
+}
+
+.image-collection {
+  white-space: nowrap;
+  &::-webkit-scrollbar {
+    background-color: var(--dark-blue);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: var(--dark-blue); // Set a background color for the scrollbar track
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--dark);  // Set a color for the scrollbar thumb
+    border-radius: 10px;  // Set a border radius for the scrollbar thumb
+  }
+}
+
+
+.image-collection {
+  display: flex;
+  gap: 2rem;
+  padding-top: 2rem;
+  overflow-x: scroll;
+  width: 100vw;
+  cursor: pointer;
+  transition: transform 0.2s ease-out;
+
+  .thumbnail-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    color: #fff;
+    padding: 1rem;
+
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.05);
+    }
+  }
+
+  .img-thumbnails {
+    border-radius: 2rem;
+  }
+}
+
+h2 {
+  font-size: var(--large-heading);
+  color: var(--white);
+  font-weight: var(--font-light);
+  padding-left: 2rem;
+}
+
+.thumbnail-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.movie-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding-right: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--medium-heading);
+  padding-left: 2.5rem;
+  padding-bottom: 1.7rem;
+}
+
+.movie-year {
+  font-size: 1.5rem;
+  position: absolute;
+  line-height: 1.89rem;
+  opacity: 0.7;
+  left: 3rem;
+  list-style: none;
+}
+
+.movie-rating {
+  position: absolute;
+  font-size: 1.5rem;
+  opacity: 0.7;
+  left: 18rem;
+  top: 1rem;
+  list-style:square;
+}
+
+.movie-category {
+  font-size: 1.5rem;
+  position: absolute;
+  left: 11rem;
+  opacity: 0.7;
+  list-style: square;
+}
+
+.movie-icon {
+  position: absolute;
+  left: 7.5rem;
+  top: 1.37rem;
+  list-style: none;
+}
+
+
+@media (max-width: 768px) {
+  .trending-container {
+    grid-row: 2 / 3;
+    grid-column: 2 / 5;
+    font-family: var(--font-family);
+    text-align: center;
+    margin-left: 2rem;
+
+    .movie-gallery {
+      //margin-left: 7rem;
+      margin-right: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trending {
+      font-size: 2.6rem;
+    }
+  }
+
+}
+
+@media (max-width: 627px) {
+
+}
+
+@media (max-width: 400px) {
+
+}

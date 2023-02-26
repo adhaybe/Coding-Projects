@@ -1,0 +1,40 @@
+.login-container {
+  background-color: var(--dark-blue);
+  grid-column: 5 / 9;
+  grid-row: 4 / 10;
+  border-radius: 1.2rem;
+  width: 100%;
+  height: max-content;
+  font-family: var(--font-family);
+  
+  span {
+    color: var(--white);
+    font-size: 3.2rem;
+    line-height: 4.032rem;
+    font-weight: var(--font-light);
+    grid-area: 1 / 2 / 1 / -1;
+    letter-spacing: 2px;
+  }
+
+  button {
+    @extend button;
+    
+  }
+
+  p {
+    @extend p;
+  }
+
+  @media (max-width: 1000px) {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    margin-left: 0;
+    border-radius: 0;
+    margin-top: 6rem;
+    form {
+      height: auto;
+      gap: 8.45rem;
+      padding: 7rem 5rem;
+    }
+  }
+}

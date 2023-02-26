@@ -1,0 +1,21 @@
+<h2 class="movies" *ngIf="bookmarked.length > 0">Bookmarks</h2>
+<div class="media-grid" *ngIf="bookmarked.length > 0">
+  <div *ngFor="let content of bookmarked" class="media-card">
+    <span class="media-image">
+      <img [src]="content.thumbnail?.regular?.medium" alt="{{ content.title }}">
+    </span>
+    <button class="btn-bookmark" (click)="removeBookmark(content)">
+      <img *ngIf="content.isBookmarked" src="../../../assets/icon-bookmark-full.svg" alt="bookmark">
+      <img *ngIf="!content.isBookmarked" src="../../../assets/icon-bookmark-empty.svg" alt="bookmark">
+    </button>
+    <section class="caption">
+      <span>{{ content.year }}</span>
+      <span>{{ content.category }}</span>
+      <span><img src="{{ icon }}" alt=""></span>
+      <span>{{ content.rating }}</span>
+    </section>
+    <span class="title-movie">{{ content.title }}</span>
+  </div>
+</div>
+
+<p *ngIf="bookmarked.length === 0">Oops you haven't saved any bookmarks!</p>

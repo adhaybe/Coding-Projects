@@ -1,0 +1,19 @@
+<h2 class="trending">Trending</h2>
+<section class="movie-gallery">
+    <ul class="image-collection" #gallery>
+        <li *ngFor="let content of trending">
+            <div class="thumbnail-wrapper">
+                <img class="img-thumbnails" [src]="content.thumbnail?.trending?.small" [alt]="content.title">
+                <button class="btn-bookmark" [class.bookmarked]="content.isBookmarked" (click)="addToBookmarks(content)">
+                    <img src="../../../assets/icon-bookmark-empty.svg" alt="bookmark">
+                  </button>
+                <div class="thumbnail-caption">
+                    <li class="movie-year">{{ content.year }}</li>
+                    <li class="movie-icon"><img src="../../../assets/icon-category-movie.svg" alt="movie icon"></li>
+                    <li class="movie-category">{{ content.category }}</li>
+                    <h3 class="movie-title">{{ content.title }}</h3>
+                </div>
+            </div>
+        </li>
+    </ul>
+</section>

@@ -1,0 +1,30 @@
+<nav>
+    <ul class="list-container">
+      <li>
+        <img class="app-logo" src="{{appLogo}}" routerLink="/home" alt="Home Icon" routerLinkActive="active">
+      </li>
+      <li class="nav-logo-container">
+
+        <div class="nav-logo-item" routerLink="/home" routerLinkActive="active">
+          <img class="nav-logo" src="{{homeIcon}}" alt="Home">
+        </div>
+
+        <div class="nav-logo-item" routerLink="/movies" routerLinkActive="active">
+          <img class="nav-logo" src="{{moviesIcon}}" alt="Movies">
+        </div>
+
+        <div class="nav-logo-item" routerLink="/tv-series" routerLinkActive="active">
+          <img class="nav-logo" src="{{tvShowIcon}}" alt="TV Series">
+        </div>
+
+        <div class="nav-logo-item" routerLink="/bookmarks" routerLinkActive="active">
+          <img class="nav-logo" src="{{bookmarkIcon}}" alt="Bookmarks">
+        </div>
+
+      </li>
+      <li>
+        <img class="account-logo" src="{{accountIcon}}" alt="Account User" (click)="onLogOut()">
+      </li>
+    </ul>
+</nav>
+

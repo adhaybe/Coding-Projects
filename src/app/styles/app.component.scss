@@ -1,0 +1,36 @@
+.container {
+    background-color: var(--dark);
+}
+
+.auth-form {
+
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    height: 100vh;
+
+    img {
+        grid-row: 2 / 3;
+        grid-column: 6 / span 2;
+        place-self: center;
+    }
+
+    @media (max-width: 1000px) {
+        img {
+            position: absolute;
+            top: 2rem;
+        }
+      }
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+.hide {
+    display: none;
+}

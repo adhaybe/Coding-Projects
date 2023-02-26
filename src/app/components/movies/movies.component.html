@@ -1,0 +1,20 @@
+<h2 class="movies">Movies</h2>
+<div class="media-grid">
+  <div *ngFor="let movie of movies" class="media-card">
+    <span class="media-image">
+      <img [src]="movie.thumbnail?.regular?.medium" alt="{{ movie.title }}">
+    </span>
+    <button class="btn-bookmark" [class.bookmarked]="movie.isBookmarked" (click)="addToBookmarks(movie)">
+      <img src="../../../assets/icon-bookmark-empty.svg" alt="bookmark">
+    </button>
+    <section class="caption">
+      <span>{{ movie.year }}</span>
+      <span>{{ movie.category }}</span>
+      <span><img src="{{ icon }}" alt=""></span>
+      <span>{{ movie.rating }}</span>
+    </section>
+    <span class="title-movie">{{ movie.title }}</span>
+  </div>
+</div>
+
+
