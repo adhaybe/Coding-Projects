@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
 import { MoviesComponent } from './components/movies/movies.component';
+import { FilterComponent } from './filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { MoviesComponent } from './components/movies/movies.component';
     BookmarksComponent,
     HomeComponent,
     MoviesComponent,
+    FilterComponent,
   ],
   imports: [
     BrowserModule,
